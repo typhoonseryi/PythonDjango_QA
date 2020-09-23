@@ -1,0 +1,98 @@
+<html>
+{% load static %}
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static "css/like.css" %}">
+<script src="{% static "js/jquery-3.0.0.min.js" %}"></script>
+<style>
+   body {
+    background: url("{% static "img/fon2.jpg" %}") no-repeat center center;
+    background-size: cover;
+   }
+   .er {
+     color: rgb(255, 0, 0);
+   }
+</style>
+</head>
+<body>
+<h1>Title: {{ title }}</h1>
+<h3>Author: <a href="/check_auth/{{ author.username }}">{{ author.username }}</a></h3>
+<h3>Added at: {{ date }}</h3>
+<p>{{ text }}</p>
+{% if auth %}
+<form method="post" class="like_sub">
+{% csrf_token %}
+<div class='like'>
+  <input type="hidden" name="question_id" value="{{ id }}">
+  <input type="hidden" name="user_id" value="{{ user.id }}">
+  <div><button class='like-toggle basic2'> ♥</button><span id="rating"></span></div>
+</div>
+</form>
+{% endif %}
+<h2>Answers({{ answers.count }})</h2>
+<ul>
+{% for l in answers %}
+<li>{{l.text}} (<a href="/users/{{ l.author.username }}/">{{ l.author.username }}</a>)</li>
+{% endfor %}
+<p class="er">{{ error }}</p>
+{% if auth %}
+</ul>
+<h2>Type your answer</h2>
+<form class="ans_sub" method="post" action="/question/{{ id }}/">
+{% csrf_token %}
+<fieldset>
+{{ form.as_ul }}
+</fieldset>
+<button type="submit">Отправить</button>
+</form>
+{% endif %}
+<a href='/'>Главная</a>
+<div id="result"></div>
+<script>
+var id={{ id }};
+//$( document ).ready(function(){
+//	  $( ".like_sub" ).submit(function(){
+//	    var formData = $( this ).serialize();
+//	    $.post( "/likes/", formData, function( data ) {
+//	    })
+//	  });
+//});
+
+$(document).ready(function(){
+    $(".like_sub").submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: '/likes/',
+            data: $(".like_sub").serialize(),
+            type: 'POST',
+            //success: function(data){
+                    //$('#result').html(data);
+            //}
+        });
+    });
+    setInterval(function(){
+        $.ajax({
+            url : "/getrate/",
+            type : "GET",
+            dataType: "json",
+            data : {
+                client_response : id
+                },
+            success: function(json) {
+                document.getElementById("rating").innerHTML=' ' + json.rating + ' likes';
+            },
+            failure: function(json) {
+                alert('Got an error dude');
+            }
+        });
+    },50);
+    $('.like-toggle').click(function(){
+       $(this).toggleClass('like-active');
+       //$(this).next().toggleClass('hidden');
+    });
+});
+
+</script>
+</body></html>

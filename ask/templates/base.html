@@ -1,0 +1,124 @@
+<html>
+{% load static %}
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<style>
+   body {
+    background: url("{% static "img/fon2.jpg" %}") no-repeat center center;
+    background-size: cover;
+   }
+   table.up {
+    width: 100%; /* Ширина таблицы */
+    margin: auto; /* Выравниваем таблицу по центру окна  */
+   }
+   table.up td.left {
+    width: 33%;
+    text-align: left;
+   }
+   table.up th.center {
+    width: 33%;
+    text-align: center;
+    font-size: 30px;
+   }
+   table.up td.right {
+    width: 33%;
+    text-align: right;
+   }
+   table.q {
+    width: 300px; /* Ширина таблицы */
+    margin: auto; /* Выравниваем таблицу по центру окна  */
+   }
+   .qu {
+    text-align: center; /* Выравниваем текст по центру ячейки */
+    font-size:47px;
+   }
+   .active {
+    border: 1px solid red
+   }
+   nav {
+   font-size:30px;
+   }
+  </style>
+</head>
+<body>
+<!--{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} m-2" id="msg" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}-->
+<table class="up">
+<tr>
+<td style="font-size: 20px" class="left">
+   {% if author != 'Not authorized' %}<a href="/check_auth/{{ author }}/">{{ author }}</a>
+   {% else %}{{ author }}{% endif %}
+</td>
+<th class="center">Список вопросов</th>
+<td class="right">
+<div id="USD">Доллар США $ — 00,0000 руб.</div>
+<div id="EUR">Евро € — 00,0000 руб.</div>
+</td>
+</tr></table>
+<table class="q">
+{% for l in posts %}
+<tr>
+<td class="qu"><a href="/question/{{l.id}}/">{{l.title}}</a></td>
+</tr>
+{% endfor %}
+</table>
+<nav><ul class="pagination">
+{% for p in paginator.page_range %}
+{% if p == page.number %}
+<li class="active">
+{% else %}
+<li>
+{% endif %}
+<a href="{{ paginator.baseurl }}{{ p }}">
+{{ p }}</a>
+</li>
+{% endfor %}
+</ul></nav>
+<p><a href='/popular/'>Интересные вопросы</a></p>
+<p><a href='/ask/'>Задать вопрос</a></p>
+<p><a href='/signup/'>Зарегистрироваться</a>
+/
+{% if auth %}
+<a href='/logout/'>Выйти</a>
+{% else %}
+<a href='/login/'>Войти</a>
+{% endif %}
+</p>
+{% if vkauth and auth  %}
+<p><a href='/vk_link/{{ vk_id }}/{{ author }}/'>Привязать аккаунт к vk id</a></p>
+{% endif %}
+<script>
+setTimeout(function(){
+      if ($('#msg').length > 0) {
+        $('#msg').remove();
+      }
+    }, 2000);
+</script>
+<script>
+function CBR_XML_Daily_Ru(rates) {
+  function trend(current, previous) {
+    if (current > previous) return ' ▲';
+    if (current < previous) return ' ▼';
+    return '';
+  }
+
+  var USDrate = rates.Valute.USD.Value.toFixed(4).replace('.', ',');
+  var USD = document.getElementById('USD');
+  USD.innerHTML = USD.innerHTML.replace('00,0000', USDrate);
+  USD.innerHTML += trend(rates.Valute.USD.Value, rates.Valute.USD.Previous);
+
+  var EURrate = rates.Valute.EUR.Value.toFixed(4).replace('.', ',');
+  var EUR = document.getElementById('EUR');
+  EUR.innerHTML = EUR.innerHTML.replace('00,0000', EURrate);
+  EUR.innerHTML += trend(rates.Valute.EUR.Value, rates.Valute.EUR.Previous);
+}
+</script>
+<script src="//www.cbr-xml-daily.ru/daily_jsonp.js" async></script>
+</body></html>

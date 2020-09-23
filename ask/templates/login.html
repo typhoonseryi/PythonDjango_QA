@@ -1,0 +1,29 @@
+<html>
+{% load static %}
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<style>
+   body {
+    background: url("{% static "img/fon2.jpg" %}") no-repeat center center; 
+    background-size: cover;
+   }
+   .er {
+     color: rgb(255, 0, 0);
+   }
+</style>
+</head>
+<body>
+<h2>For further authorization enter your login and password</h2>
+<p class="er">{{ error }}</p> 
+<form method="post" action="/login/">
+{% csrf_token %}
+<fieldset>
+{{ form.as_ul }}
+</fieldset>
+<button type="submit">Отправить</button>
+</form>
+<p><a href="/signup/">Зарегистрироваться</a></p>
+<p><a href="/">Главная</a></p>
+</body></html>

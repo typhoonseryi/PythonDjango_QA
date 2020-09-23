@@ -1,0 +1,53 @@
+<html>
+{% load static %}
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<style>
+   body {
+    background: url("{% static "img/fon2.jpg" %}") no-repeat center center; 
+    background-size: cover;
+   }
+   table {
+    width: 300px; /* Ширина таблицы */
+    margin: auto; /* Выравниваем таблицу по центру окна  */
+   }
+   .qu {
+    text-align: center; /* Выравниваем текст по центру ячейки */
+    font-size:47px;
+   }
+   .active {
+    border: 1px solid red
+   }
+   nav {
+   font-size:30px;
+   }
+   h1 {
+   text-align: center
+   }
+  </style>
+</head>
+<body>
+<h1>Интересные вопросы</h1>
+<table>
+{% for l in posts %}
+<tr><td class="qu"><a href="/question/{{l.id}}/">{{l.title}}</a></td></tr>
+{% endfor %}
+</table>
+</ul>
+<nav><ul class="pagination">
+{% for p in paginator.page_range %}
+{% if p == page.number %}
+<li class="active">
+{% else %}
+<li>
+{% endif %}
+<a href="{{ paginator.baseurl }}{{ p }}">
+{{ p }}</a>
+</li>
+{% endfor %}
+</ul></nav>
+<p><a href='/'>Главная</a></p>
+<p><a href='/ask/'>Задать вопрос</a></p>
+</body></html>
